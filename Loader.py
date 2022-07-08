@@ -179,7 +179,7 @@ class Loader:
                 self.ret[matched_armory_idx] = (
                     np.amax(diff_armory_arr), numeric)
 
-            cv.imshow("preview", frame)
+            # cv.imshow("preview", frame)
             if cv.waitKey(25) & 0xff == ord('q'):
                 break
 
