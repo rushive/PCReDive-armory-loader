@@ -7,4 +7,7 @@ for (img of parent.querySelectorAll(".itemBox.col.p-2 img")) {
   arr.push(img.src);
 }
 
-JSON.stringify(arr)
+const str = JSON.stringify(arr);
+const res = `{ "URL": [ ${str.slice(1, -1)} ] })`;
+
+console.log(res);

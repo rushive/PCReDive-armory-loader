@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import cv2 as cv
 import numpy as np
 from requests import request
@@ -18,12 +19,15 @@ class Loader:
         self.mono_bg = np.full(self.scaled_size[::-1], 244, dtype=np.uint8)
         self.last_idx = 0
         self.armory = []
+        self.armory_table = []
         self.digits = []
         self.mask = []
         self.ret = None
 
     def fetch_imgs(self):
         if 'images' not in os.listdir():
+            print("Downloading icons from PCReDive-wiki...")
+
             os.mkdir('images')
             fd = open("armory.json")
             for i, url in enumerate(json.load(fd)['URL']):
@@ -31,12 +35,21 @@ class Loader:
                 img = cv.imdecode(np.frombuffer(
                     res.content, np.unit8), cv.IMREAD_GRAYSCALE)
                 cv.imwrite(f'images/{i}.png', img)
+
+            print("Complete")
             fd.close()
 
-        for n in sorted(os.listdir('images'), key=(
-                lambda name: 10 if name == "x.png" else int(name.split('.')[0]))):
+        fd = open("armory.json")
+        content = json.load(fd)['URL']
+        for i, n in enumerate(sorted(os.listdir('images'), key=(
+                lambda name: int(name.split('.')[0])))):
             img = cv.imread(f'images/{n}', cv.IMREAD_GRAYSCALE)
             self.armory.append(cv.blur(img, (2, 2)))
+
+            reg = re.search('equipment/icon_equipment_(\d+).png', content[i])
+            self.armory_table.append(reg.group(1))
+
+        fd.close()
 
         for n in sorted(os.listdir('digits'), key=(
                 lambda name: 10 if name == "x.png" else int(name.split('.')[0]))):
@@ -45,7 +58,7 @@ class Loader:
             self.mask.append(img[:, :, 3])
 
         self.ret = np.empty(len(self.armory), dtype=object)
-        self.ret[:] = [(-1, '')]
+        self.ret[:] = [(0, -1, '')]
 
     def get_bg(self):
         samples = self.cap.get(cv.CAP_PROP_FRAME_COUNT) * \
@@ -79,6 +92,19 @@ class Loader:
 
         return contours
 
+    def js_code_gen(self):
+        fd = open("template.js", 'r+')
+        line = fd.readline()
+        others = fd.read()
+
+        dump = json.dumps(dict((m, n)for m, _, n in self.ret))
+        content = re.sub('`.*`;', f'`{dump}`;', line)
+
+        fd.seek(0)
+        fd.write(content + others)
+        fd.truncate()
+        fd.close()
+
     def identify(self):
         interval = 0
         while self.cap.isOpened():
@@ -86,7 +112,6 @@ class Loader:
 
             ret, frame = self.cap.read()
             if not ret:
-                print("Done")
                 break
 
             if interval % 6:
@@ -139,7 +164,7 @@ class Loader:
 
                 if np.amax(diff_armory_arr) < 0.74:
                     continue
-                if np.amax(diff_armory_arr) < self.ret[matched_armory_idx][0]:
+                if np.amax(diff_armory_arr) < self.ret[matched_armory_idx][1]:
                     continue
 
                 partition = gray_img[100:118, :]
@@ -177,7 +202,7 @@ class Loader:
                     numeric += str(s)
 
                 self.ret[matched_armory_idx] = (
-                    np.amax(diff_armory_arr), numeric)
+                    self.armory_table[matched_armory_idx], np.amax(diff_armory_arr), numeric)
 
             # cv.imshow("preview", frame)
             if cv.waitKey(25) & 0xff == ord('q'):
@@ -189,9 +214,11 @@ class Loader:
 
         self.cap.release()
         cv.destroyAllWindows()
+        print("Done")
 
     def run(self):
         self.fetch_imgs()
         self.get_bg()
         self.cap.set(cv.CAP_PROP_POS_FRAMES, 0)
         self.identify()
+        self.js_code_gen()
