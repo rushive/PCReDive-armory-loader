@@ -8,7 +8,8 @@ from requests import request
 
 class Loader:
 
-    def __init__(self, file_path, scale):
+    def __init__(self, file_path, scale, quiet):
+        self.quiet = quiet
         self.cap = cv.VideoCapture(file_path)
         if not self.cap.isOpened():
             print("[Error] Failed to read file")
@@ -134,7 +135,8 @@ class Loader:
                 if h > w * 1.1:
                     continue
 
-                # cv.rectangle(frame, (x, y + 2), (x + w + 1, y + h - 2), (0, 255, 0), 2)
+                if not self.quiet:
+                    cv.rectangle(frame, (x, y + 2), (x + w + 1, y + h - 2), (0, 255, 0), 2)
 
                 img = frame[y + 2:y + h - 2, x + 2:x + w - 2]
                 gray_img = cv.resize(cv.cvtColor(
@@ -204,7 +206,8 @@ class Loader:
                 self.ret[matched_armory_idx] = (
                     self.armory_table[matched_armory_idx], np.amax(diff_armory_arr), numeric)
 
-            # cv.imshow("preview", frame)
+            if not self.quiet:
+                cv.imshow("preview", frame)
             if cv.waitKey(25) & 0xff == ord('q'):
                 break
 
