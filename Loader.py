@@ -3,7 +3,7 @@ import os
 import re
 import cv2 as cv
 import numpy as np
-from requests import request
+import requests
 
 
 class Loader:
@@ -32,9 +32,9 @@ class Loader:
             os.mkdir('images')
             fd = open("armory.json")
             for i, url in enumerate(json.load(fd)['URL']):
-                res = request.get(url)
+                res = requests.get(url)
                 img = cv.imdecode(np.frombuffer(
-                    res.content, np.unit8), cv.IMREAD_GRAYSCALE)
+                    res.content, np.uint8), cv.IMREAD_GRAYSCALE)
                 cv.imwrite(f'images/{i}.png', img)
 
             print("Complete")
