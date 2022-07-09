@@ -9,13 +9,22 @@
 $ python3 main.py -i <your_video_path> -q
 ```
 
-或使用預編譯的 [可執行檔]()，在 `result.json` 檔案中生成裝備數量
+或使用預編譯的 [可執行檔](https://github.com/rushive/PCReDive-armory-loader/releases)
+```
+# Windows
+$ main.exe -i <your_video_path>
+
+# Linux
+$ main -i <your_video_path>
+```
+
+並在 `result.json` 檔案中生成裝備數量
 
 <br>
 
 首次使用時會從 [蘭德索爾圖書館](https://pcredivewiki.tw/) 下載用於比對的裝備縮圖至 `images/` 中
 
-若要查看辨識的過程，移除命令的 `-q` 選項即可
+若要查看辨識的過程，移除命令的 `-q` 選項即可， **請勿按 `X` 關閉預覽視窗**，若要關閉可以在彈出視窗中按下 <kbd>q</kbd> 提早中止
 
 ### 可用參數
 
@@ -36,7 +45,7 @@ optional arguments:
 
 `-s/--scale` : 影片的縮放比 ( 預設為 1.0 ) ，建議數值為 **影片高度 ( 短邊 ) * 縮放比 ≈ 540** 。e.g. 1080p 的影片使用 0.5 ，720p 使用 0.75
 
-`-q/--quiet` : 安靜模式，隱藏辨識時的彈出視窗
+`-q/--quiet` : 安靜模式，隱藏辨識時的彈出預覽視窗
 
 ## 匯出檔案格式
 
