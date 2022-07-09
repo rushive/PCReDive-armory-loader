@@ -4,7 +4,7 @@
 
 ## 使用方式
 
-在此目錄中執行：( 需要 python ⩾ 3.6, opencv-python, numpy )
+在此目錄中執行：( 需要 python ⩾ 3.6, opencv-python = 4.5.3.56, numpy, requests )
 ```
 $ python3 main.py -i <your_video_path> -q
 ```
