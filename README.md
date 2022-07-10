@@ -15,7 +15,7 @@ $ python3 main.py -i <your_video_path> -q
 $ main.exe -i <your_video_path>
 
 # Linux
-$ main -i <your_video_path>
+$ ./main -i <your_video_path>
 ```
 
 並在 `result.json` 檔案中生成裝備數量
@@ -46,6 +46,10 @@ optional arguments:
 `-s/--scale` : 影片的縮放比 ( 預設為 1.0 ) ，建議數值為 **影片高度 ( 短邊 ) * 縮放比 ≈ 540** 。e.g. 1080p 的影片使用 0.5 ，720p 使用 0.75
 
 `-q/--quiet` : 安靜模式，隱藏辨識時的彈出預覽視窗
+
+### 預覽
+
+[preview (imgur)](https://i.imgur.com/77rfO0m.gif)
 
 ## 匯出檔案格式
 
