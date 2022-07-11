@@ -106,6 +106,8 @@ class Loader:
         fd.truncate()
         fd.close()
 
+        return content + others
+
     def identify(self):
         interval = 0
         while self.cap.isOpened():
@@ -224,4 +226,4 @@ class Loader:
         self.get_bg()
         self.cap.set(cv.CAP_PROP_POS_FRAMES, 0)
         self.identify()
-        self.js_code_gen()
+        return self.js_code_gen()

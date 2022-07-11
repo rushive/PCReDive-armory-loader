@@ -1,4 +1,6 @@
 __pycache__/
 images/
+build/
+dist/
 
 *.mp4
