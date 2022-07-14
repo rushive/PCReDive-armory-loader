@@ -156,7 +156,7 @@ class Loader:
                     vmin, vmax, _, _ = cv.minMaxLoc(res)
                     diff_armory_arr.append(vmax)
 
-                    if vmax > 0.76:
+                    if vmax > 0.75:
                         self.last_idx = i
                         break
                     if i > self.last_idx + 45:
@@ -167,7 +167,7 @@ class Loader:
                 # if matched_armory_idx == 10:
                 #     print(np.amax(diff_armory_arr))
 
-                if np.amax(diff_armory_arr) < 0.74:
+                if np.amax(diff_armory_arr) < 0.5:
                     continue
                 if np.amax(diff_armory_arr) < self.ret[matched_armory_idx][1]:
                     continue
@@ -227,4 +227,4 @@ class Loader:
         self.get_bg()
         self.cap.set(cv.CAP_PROP_POS_FRAMES, 0)
         self.identify()
-        return self.js_code_gen()
+        return (self.js_code_gen(), [i for _, i, _ in self.ret])
