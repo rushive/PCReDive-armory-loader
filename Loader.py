@@ -137,12 +137,13 @@ class Loader:
                 if h > w * 1.1:
                     continue
 
-                if not self.quiet:
-                    cv.rectangle(frame, (x, y + 2), (x + w + 1, y + h - 2), (0, 255, 0), 2)
-
                 img = frame[y + 2:y + h - 2, x + 2:x + w - 2]
                 gray_img = cv.resize(cv.cvtColor(
                     img, cv.COLOR_RGB2GRAY), (128, 128), interpolation=cv.INTER_LINEAR)
+
+                if not self.quiet:
+                    cv.rectangle(frame, (x, y + 2),
+                                 (x + w + 1, y + h - 2), (0, 255, 0), 2)
 
                 diff_armory_arr = []
                 for i, armory in enumerate(self.armory):
